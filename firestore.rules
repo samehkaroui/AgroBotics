@@ -1,0 +1,135 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+    
+    function isOperator() {
+      return isAuthenticated() && (getUserRole() == 'operator' || getUserRole() == 'admin');
+    }
+    
+    function isViewer() {
+      return isAuthenticated() && (getUserRole() == 'viewer' || getUserRole() == 'operator' || getUserRole() == 'admin');
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Anyone authenticated can read their own profile
+      allow read: if isAuthenticated() && isOwner(userId);
+      
+      // Admins can read all users
+      allow read: if isAdmin();
+      
+      // Only admins can create, update, or delete users
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Pumps collection
+    match /pumps/{pumpId} {
+      // Viewers and above can read
+      allow read: if isViewer();
+      
+      // Operators and admins can write
+      allow create, update, delete: if isOperator();
+    }
+    
+    // Valves collection
+    match /valves/{valveId} {
+      // Viewers and above can read
+      allow read: if isViewer();
+      
+      // Operators and admins can write
+      allow create, update, delete: if isOperator();
+    }
+    
+    // Sensors collection
+    match /sensors/{sensorId} {
+      // Viewers and above can read
+      allow read: if isViewer();
+      
+      // Operators and admins can write
+      allow create, update, delete: if isOperator();
+    }
+    
+    // Zones collection
+    match /zones/{zoneId} {
+      // Viewers and above can read
+      allow read: if isViewer();
+      
+      // Operators and admins can write
+      allow create, update, delete: if isOperator();
+    }
+    
+    // Schedules collection
+    match /schedules/{scheduleId} {
+      // Viewers and above can read
+      allow read: if isViewer();
+      
+      // Operators and admins can write
+      allow create, update, delete: if isOperator();
+    }
+    
+    // Alerts collection
+    match /alerts/{alertId} {
+      // Viewers and above can read
+      allow read: if isViewer();
+      
+      // Operators and admins can create and update
+      allow create, update: if isOperator();
+      
+      // Only admins can delete
+      allow delete: if isAdmin();
+    }
+    
+    // Activity logs collection
+    match /activityLogs/{logId} {
+      // Viewers and above can read
+      allow read: if isViewer();
+      
+      // System can create logs (authenticated users)
+      allow create: if isAuthenticated();
+      
+      // Only admins can delete
+      allow delete: if isAdmin();
+    }
+    
+    // History collection
+    match /history/{historyId} {
+      // Viewers and above can read
+      allow read: if isViewer();
+      
+      // Operators and admins can write
+      allow create, update: if isOperator();
+      
+      // Only admins can delete
+      allow delete: if isAdmin();
+    }
+    
+    // Sensor data collection (real-time sensor readings)
+    match /sensorData/{dataId} {
+      // Viewers and above can read
+      allow read: if isViewer();
+      
+      // Operators and admins can write
+      allow create, update: if isOperator();
+      
+      // Auto-delete old data (admins only)
+      allow delete: if isAdmin();
+    }
+  }
+}

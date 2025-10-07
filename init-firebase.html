@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Initialize Firebase Data - IrriSmart</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+    
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    
+    .warning {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      color: #856404;
+    }
+    
+    .warning strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    .info {
+      background: #d1ecf1;
+      border: 1px solid #17a2b8;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      color: #0c5460;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+    }
+    
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    button:hover {
+      background: #5568d3;
+    }
+    
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .log {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      display: none;
+    }
+    
+    .log.show {
+      display: block;
+    }
+    
+    .log-entry {
+      margin-bottom: 5px;
+      padding: 5px;
+    }
+    
+    .log-entry.success {
+      color: #28a745;
+    }
+    
+    .log-entry.error {
+      color: #dc3545;
+    }
+    
+    .log-entry.info {
+      color: #17a2b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌱 Initialize Firebase Data</h1>
+    <p class="subtitle">IrriSmart Irrigation Management System</p>
+    
+    <div class="warning">
+      <strong>⚠️ Warning</strong>
+      This will add sample data to your Firebase Firestore database. Make sure you have:
+      <ul style="margin-top: 10px; margin-left: 20px;">
+        <li>Created a Firebase project</li>
+        <li>Enabled Firestore Database</li>
+        <li>Configured your .env file with Firebase credentials</li>
+      </ul>
+    </div>
+    
+    <div class="info">
+      <strong>ℹ️ What will be created:</strong>
+      <ul style="margin-top: 10px; margin-left: 20px;">
+        <li>3 Users (admin, operator, viewer)</li>
+        <li>3 Pumps</li>
+        <li>4 Valves</li>
+        <li>6 Sensors</li>
+        <li>4 Irrigation Zones</li>
+        <li>Sample schedules, alerts, and historical data</li>
+      </ul>
+    </div>
+    
+    <button id="initBtn" onclick="initializeData()">
+      🚀 Initialize Firebase Data
+    </button>
+    
+    <div id="log" class="log"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc, setDoc, doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    // Firebase configuration for agrobotics-1 project
+    const firebaseConfig = {
+      apiKey: "AIzaSyARRC6CaggRYOKKzHCOZK5BAOjKDcNPY7A",
+      authDomain: "agrobotics-1.firebaseapp.com",
+      projectId: "agrobotics-1",
+      storageBucket: "agrobotics-1.firebasestorage.app",
+      messagingSenderId: "926725229927",
+      appId: "1:926725229927:web:4bdf102bc182331a1b33c2",
+      measurementId: "G-K3R8KSMSG4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    function addLog(message, type = 'info') {
+      const logDiv = document.getElementById('log');
+      logDiv.classList.add('show');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+      logDiv.appendChild(entry);
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    window.initializeData = async function() {
+      const btn = document.getElementById('initBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Initializing...';
+      
+      document.getElementById('log').innerHTML = '';
+      addLog('Starting Firebase data initialization...', 'info');
+
+      try {
+        // Sample data - Users
+        const users = [
+          { id: '1', username: 'admin', email: 'admin@irrigationsystem.com', role: 'admin', fullName: 'Administrateur Système', isActive: true, permissions: ['all'], createdAt: new Date().toISOString(), lastLogin: new Date().toISOString() },
+          { id: '2', username: 'operator', email: 'operator@irrigationsystem.com', role: 'operator', fullName: 'Opérateur Principal', isActive: true, permissions: ['view_dashboard', 'control_irrigation'], createdAt: new Date().toISOString(), lastLogin: new Date().toISOString() },
+          { id: '3', username: 'viewer', email: 'viewer@irrigationsystem.com', role: 'viewer', fullName: 'Observateur', isActive: true, permissions: ['view_dashboard'], createdAt: new Date().toISOString(), lastLogin: new Date().toISOString() }
+        ];
+
+        addLog('Adding users...', 'info');
+        for (const user of users) {
+          await setDoc(doc(db, 'users', user.id), user);
+        }
+        addLog(`✓ Added ${users.length} users`, 'success');
+
+        // Pumps
+        const pumps = [
+          { name: 'Pompe Principale', model: 'Grundfos CR 5-8', location: 'Station de pompage A', status: 'running', flowRate: 150, pressure: 4.5, powerConsumption: 2.8, runningHours: 1247, lastMaintenance: '2024-12-15' },
+          { name: 'Pompe Secondaire', model: 'Wilo MHI 204', location: 'Station de pompage B', status: 'stopped', flowRate: 120, pressure: 0, powerConsumption: 0, runningHours: 892, lastMaintenance: '2024-11-20' },
+          { name: 'Pompe de Secours', model: 'Ebara 3M 32-160', location: 'Station de pompage A', status: 'maintenance', flowRate: 0, pressure: 0, powerConsumption: 0, runningHours: 456, lastMaintenance: '2024-10-10' }
+        ];
+
+        addLog('Adding pumps...', 'info');
+        for (const pump of pumps) {
+          await addDoc(collection(db, 'pumps'), pump);
+        }
+        addLog(`✓ Added ${pumps.length} pumps`, 'success');
+
+        // Valves
+        const valves = [
+          { name: 'Vanne Zone Nord', zoneId: 'zone-1', status: 'open', openingPercentage: 75, type: 'Électrovanne', lastOperation: new Date().toISOString(), operationCount: 234 },
+          { name: 'Vanne Zone Sud', zoneId: 'zone-2', status: 'closed', openingPercentage: 0, type: 'Vanne motorisée', lastOperation: new Date().toISOString(), operationCount: 189 },
+          { name: 'Vanne Zone Est', zoneId: 'zone-3', status: 'open', openingPercentage: 100, type: 'Électrovanne', lastOperation: new Date().toISOString(), operationCount: 312 },
+          { name: 'Vanne Zone Ouest', zoneId: 'zone-4', status: 'closed', openingPercentage: 0, type: 'Vanne manuelle', lastOperation: new Date().toISOString(), operationCount: 145 }
+        ];
+
+        addLog('Adding valves...', 'info');
+        for (const valve of valves) {
+          await addDoc(collection(db, 'valves'), valve);
+        }
+        addLog(`✓ Added ${valves.length} valves`, 'success');
+
+        // Zones
+        const zones = [
+          { name: 'Zone Nord - Tomates', area: 2500, cropType: 'Tomates', status: 'active', soilMoisture: 68, lastWatered: new Date().toISOString() },
+          { name: 'Zone Sud - Poivrons', area: 1800, cropType: 'Poivrons', status: 'inactive', soilMoisture: 45, lastWatered: new Date(Date.now() - 86400000).toISOString() },
+          { name: 'Zone Est - Concombres', area: 2200, cropType: 'Concombres', status: 'active', soilMoisture: 72, lastWatered: new Date().toISOString() },
+          { name: 'Zone Ouest - Aubergines', area: 1500, cropType: 'Aubergines', status: 'inactive', soilMoisture: 52, lastWatered: new Date(Date.now() - 172800000).toISOString() }
+        ];
+
+        addLog('Adding zones...', 'info');
+        for (const zone of zones) {
+          await addDoc(collection(db, 'zones'), zone);
+        }
+        addLog(`✓ Added ${zones.length} zones`, 'success');
+
+        // Alerts
+        const alerts = [
+          { type: 'warning', message: 'Humidité du sol faible dans Zone Sud', timestamp: new Date().toISOString(), read: false, severity: 'medium' },
+          { type: 'info', message: 'Irrigation programmée terminée avec succès', timestamp: new Date(Date.now() - 3600000).toISOString(), read: true, severity: 'low' },
+          { type: 'error', message: 'Pompe de Secours nécessite une maintenance', timestamp: new Date(Date.now() - 7200000).toISOString(), read: false, severity: 'high' }
+        ];
+
+        addLog('Adding alerts...', 'info');
+        for (const alert of alerts) {
+          await addDoc(collection(db, 'alerts'), alert);
+        }
+        addLog(`✓ Added ${alerts.length} alerts`, 'success');
+
+        // Activity Logs
+        const activityLogs = [
+          { userId: '1', action: 'Système démarré', details: 'Connexion administrateur', timestamp: new Date().toISOString() },
+          { userId: '2', action: 'Vanne activée', details: 'Vanne Zone Nord ouverte à 75%', timestamp: new Date(Date.now() - 1800000).toISOString() },
+          { userId: '1', action: 'Configuration modifiée', details: 'Seuils d\'alerte mis à jour', timestamp: new Date(Date.now() - 3600000).toISOString() }
+        ];
+
+        addLog('Adding activity logs...', 'info');
+        for (const log of activityLogs) {
+          await addDoc(collection(db, 'activityLogs'), log);
+        }
+        addLog(`✓ Added ${activityLogs.length} activity logs`, 'success');
+
+        addLog('🎉 Initialization completed successfully!', 'success');
+        addLog('You can now close this page and use the application.', 'info');
+        btn.textContent = '✅ Done!';
+        
+      } catch (error) {
+        addLog(`✗ Error: ${error.message}`, 'error');
+        addLog('Check browser console for details', 'error');
+        console.error('Detailed error:', error);
+        btn.disabled = false;
+        btn.textContent = '🚀 Initialize Firebase Data';
+      }
+    };
+  </script>
+</body>
+</html>

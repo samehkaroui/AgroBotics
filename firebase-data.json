@@ -1,0 +1,648 @@
+{
+  "users": {
+    "user-admin": {
+      "username": "admin",
+      "email": "admin@irrigationsystem.com",
+      "fullName": "System Administrator",
+      "role": "admin",
+      "isActive": true,
+      "permissions": ["all"],
+      "createdAt": "2025-10-05T11:00:00Z",
+      "lastLogin": "2025-10-05T11:00:00Z"
+    },
+    "user-operator": {
+      "username": "operator",
+      "email": "operator@irrigationsystem.com",
+      "fullName": "System Operator",
+      "role": "operator",
+      "isActive": true,
+      "permissions": ["view_dashboard", "control_irrigation", "view_sensors", "manage_schedules"],
+      "createdAt": "2025-10-05T11:00:00Z",
+      "lastLogin": "2025-10-05T11:00:00Z"
+    },
+    "user-viewer": {
+      "username": "viewer",
+      "email": "viewer@irrigationsystem.com",
+      "fullName": "System Viewer",
+      "role": "viewer",
+      "isActive": true,
+      "permissions": ["view_dashboard", "view_sensors", "view_history"],
+      "createdAt": "2025-10-05T11:00:00Z",
+      "lastLogin": "2025-10-05T11:00:00Z"
+    }
+  },
+  "pumps": {
+    "pump-1": {
+      "name": "Main Pump",
+      "status": "stopped",
+      "flowRate": 150,
+      "power": 2000,
+      "location": "Main Garden",
+      "lastMaintenance": "2025-01-01T00:00:00Z",
+      "efficiency": 90,
+      "energyConsumption": 0
+    },
+    "pump-2": {
+      "name": "Backup Pump",
+      "status": "stopped",
+      "flowRate": 120,
+      "power": 1500,
+      "location": "North Garden",
+      "lastMaintenance": "2025-01-15T00:00:00Z",
+      "efficiency": 85,
+      "energyConsumption": 0
+    },
+    "pump-3": {
+      "name": "Drip Irrigation Pump",
+      "status": "stopped",
+      "flowRate": 80,
+      "power": 1000,
+      "location": "Greenhouse",
+      "lastMaintenance": "2025-02-01T00:00:00Z",
+      "efficiency": 92,
+      "energyConsumption": 0
+    }
+  },
+  "valves": {
+    "valve-1": {
+      "name": "North Zone Valve",
+      "status": "closed",
+      "openingPercentage": 0,
+      "zone": "zone-1",
+      "type": "solenoid",
+      "lastOperation": "2025-10-05T11:00:00Z",
+      "operationCount": 0,
+      "maxPressure": 10,
+      "currentPressure": 0
+    },
+    "valve-2": {
+      "name": "South Zone Valve",
+      "status": "closed",
+      "openingPercentage": 0,
+      "zone": "zone-2",
+      "type": "motorized",
+      "lastOperation": "2025-10-05T11:00:00Z",
+      "operationCount": 0,
+      "maxPressure": 8,
+      "currentPressure": 0
+    },
+    "valve-3": {
+      "name": "East Zone Valve",
+      "status": "closed",
+      "openingPercentage": 0,
+      "zone": "zone-3",
+      "type": "manual",
+      "lastOperation": "2025-10-05T11:00:00Z",
+      "operationCount": 0,
+      "maxPressure": 10,
+      "currentPressure": 0
+    },
+    "valve-4": {
+      "name": "Greenhouse Valve",
+      "status": "closed",
+      "openingPercentage": 0,
+      "zone": "zone-4",
+      "type": "solenoid",
+      "lastOperation": "2025-10-05T11:00:00Z",
+      "operationCount": 0,
+      "maxPressure": 6,
+      "currentPressure": 0
+    }
+  },
+  "sensors": {
+    "sensor-1": {
+      "name": "Soil Moisture Sensor 1",
+      "type": "soil_moisture",
+      "location": "North Zone",
+      "unit": "%",
+      "status": "active",
+      "lastReading": 68.5,
+      "lastUpdate": "2025-10-05T11:00:00Z",
+      "batteryLevel": 85,
+      "calibrationDate": "2025-01-01T00:00:00Z",
+      "nextCalibration": "2025-12-01T00:00:00Z",
+      "minValue": 0,
+      "maxValue": 100,
+      "alertThresholds": {
+        "min": 30,
+        "max": 80
+      },
+      "model": "Decagon 5TM",
+      "serialNumber": "5TM-001"
+    },
+    "sensor-2": {
+      "name": "Temperature Sensor",
+      "type": "temperature",
+      "location": "Greenhouse",
+      "unit": "°C",
+      "status": "active",
+      "lastReading": 25.3,
+      "lastUpdate": "2025-10-05T11:00:00Z",
+      "batteryLevel": 92,
+      "calibrationDate": "2025-01-01T00:00:00Z",
+      "nextCalibration": "2025-11-01T00:00:00Z",
+      "minValue": -10,
+      "maxValue": 50,
+      "alertThresholds": {
+        "min": 15,
+        "max": 35
+      },
+      "model": "SenseCAP S2103",
+      "serialNumber": "SC2103-002"
+    },
+    "sensor-3": {
+      "name": "Humidity Sensor",
+      "type": "humidity",
+      "location": "Greenhouse",
+      "unit": "%",
+      "status": "active",
+      "lastReading": 65.2,
+      "lastUpdate": "2025-10-05T11:00:00Z",
+      "batteryLevel": 88,
+      "calibrationDate": "2025-01-01T00:00:00Z",
+      "nextCalibration": "2025-10-15T00:00:00Z",
+      "minValue": 0,
+      "maxValue": 100,
+      "alertThresholds": {
+        "min": 40,
+        "max": 90
+      },
+      "model": "DHT22",
+      "serialNumber": "DHT22-003"
+    },
+    "sensor-4": {
+      "name": "Soil Moisture Sensor 2",
+      "type": "soil_moisture",
+      "location": "South Zone",
+      "unit": "%",
+      "status": "active",
+      "lastReading": 72.1,
+      "lastUpdate": "2025-10-05T11:00:00Z",
+      "batteryLevel": 78,
+      "calibrationDate": "2025-01-01T00:00:00Z",
+      "nextCalibration": "2025-12-15T00:00:00Z",
+      "minValue": 0,
+      "maxValue": 100,
+      "alertThresholds": {
+        "min": 25,
+        "max": 85
+      },
+      "model": "Decagon 5TM",
+      "serialNumber": "5TM-004"
+    }
+  },
+  "zones": {
+    "zone-1": {
+      "name": "Tomato Zone",
+      "status": "active",
+      "soilMoisture": 68,
+      "temperature": 24,
+      "humidity": 65,
+      "lastWatered": "2025-10-05T11:00:00Z",
+      "area": 500,
+      "cropType": "Tomato"
+    },
+    "zone-2": {
+      "name": "Cucumber Zone",
+      "status": "inactive",
+      "soilMoisture": 45,
+      "temperature": 26,
+      "humidity": 60,
+      "lastWatered": "2025-10-04T11:00:00Z",
+      "area": 300,
+      "cropType": "Cucumber"
+    },
+    "zone-3": {
+      "name": "Pepper Zone",
+      "status": "active",
+      "soilMoisture": 72,
+      "temperature": 25,
+      "humidity": 68,
+      "lastWatered": "2025-10-05T11:00:00Z",
+      "area": 400,
+      "cropType": "Pepper"
+    },
+    "zone-4": {
+      "name": "Greenhouse",
+      "status": "active",
+      "soilMoisture": 75,
+      "temperature": 28,
+      "humidity": 70,
+      "lastWatered": "2025-10-05T11:00:00Z",
+      "area": 200,
+      "cropType": "Lettuce"
+    }
+  },
+  "alerts": {
+    "alert-1": {
+      "type": "warning",
+      "message": "Low soil moisture in North Zone",
+      "timestamp": "2025-10-05T11:00:00Z",
+      "isRead": false,
+      "zone": "zone-1",
+      "severity": "medium"
+    },
+    "alert-2": {
+      "type": "info",
+      "message": "Irrigation cycle completed in South Zone",
+      "timestamp": "2025-10-05T10:00:00Z",
+      "isRead": false,
+      "zone": "zone-2",
+      "severity": "low"
+    },
+    "alert-3": {
+      "type": "success",
+      "message": "Main pump started successfully",
+      "timestamp": "2025-10-05T09:30:00Z",
+      "isRead": false,
+      "zone": "zone-1",
+      "severity": "low"
+    }
+  },
+  "schedules": {
+    "schedule-1": {
+      "zone": "zone-1",
+      "zoneName": "Tomato Zone",
+      "startTime": "06:00",
+      "duration": 30,
+      "frequency": "daily",
+      "isActive": true,
+      "lastRun": "2025-10-05T06:00:00Z",
+      "nextRun": "2025-10-06T06:00:00Z"
+    },
+    "schedule-2": {
+      "zone": "zone-2",
+      "zoneName": "Cucumber Zone",
+      "startTime": "18:00",
+      "duration": 45,
+      "frequency": "daily",
+      "isActive": true,
+      "lastRun": "2025-10-04T18:00:00Z",
+      "nextRun": "2025-10-05T18:00:00Z"
+    },
+    "schedule-3": {
+      "zone": "zone-3",
+      "zoneName": "Pepper Zone",
+      "startTime": "07:00",
+      "duration": 40,
+      "frequency": "daily",
+      "isActive": true,
+      "lastRun": "2025-10-05T07:00:00Z",
+      "nextRun": "2025-10-06T07:00:00Z"
+    },
+    "schedule-4": {
+      "zone": "zone-4",
+      "zoneName": "Greenhouse",
+      "startTime": "08:00",
+      "duration": 20,
+      "frequency": "daily",
+      "isActive": true,
+      "lastRun": "2025-10-05T08:00:00Z",
+      "nextRun": "2025-10-06T08:00:00Z"
+    }
+  },
+  "activityLogs": {
+    "log-1": {
+      "userId": "user-admin",
+      "userName": "System Administrator",
+      "action": "Start Pump",
+      "target": "pump-1",
+      "timestamp": "2025-10-05T09:30:00Z",
+      "details": "Main pump started"
+    },
+    "log-2": {
+      "userId": "user-operator",
+      "userName": "System Operator",
+      "action": "Open Valve",
+      "target": "valve-1",
+      "timestamp": "2025-10-05T09:00:00Z",
+      "details": "North Zone valve opened to 75%"
+    },
+    "log-3": {
+      "userId": "user-admin",
+      "userName": "System Administrator",
+      "action": "Add Schedule",
+      "target": "schedule-4",
+      "timestamp": "2025-10-05T08:00:00Z",
+      "details": "New irrigation schedule added for Greenhouse"
+    }
+  },
+  "hardware": {
+    "commands": {
+      "example-command": {
+        "deviceType": "pump",
+        "deviceId": "pump-1",
+        "command": "start",
+        "timestamp": "2025-10-05T11:00:00Z",
+        "status": "pending"
+      }
+    },
+    "status": {
+      "pump-1": {
+        "deviceType": "pump",
+        "status": "stopped",
+        "current": 0,
+        "voltage": 220,
+        "timestamp": "2025-10-05T11:00:00Z"
+      },
+      "valve-1": {
+        "deviceType": "valve",
+        "status": "closed",
+        "openingPercentage": 0,
+        "timestamp": "2025-10-05T11:00:00Z"
+      }
+    },
+    "sensorReadings": {
+      "reading-1": {
+        "sensorId": "soil-moisture-1",
+        "value": 68.5,
+        "unit": "%",
+        "timestamp": "2025-10-05T11:00:00Z"
+      },
+      "reading-2": {
+        "sensorId": "temperature-1",
+        "value": 25.3,
+        "unit": "°C",
+        "timestamp": "2025-10-05T11:00:00Z"
+      },
+      "reading-3": {
+        "sensorId": "humidity-1",
+        "value": 65.2,
+        "unit": "%",
+        "timestamp": "2025-10-05T11:00:00Z"
+      }
+    }
+  },
+  "history": {
+    "2025-10-06": {
+      "date": "2025-10-06",
+      "temperature": 26.8,
+      "humidity": 64.2,
+      "soilMoisture": 65.4,
+      "waterConsumption": 425.7,
+      "pumpHours": 9.8,
+      "alerts": 2,
+      "irrigationCycles": 3,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-10-05": {
+      "date": "2025-10-05",
+      "temperature": 28.1,
+      "humidity": 61.5,
+      "soilMoisture": 62.1,
+      "waterConsumption": 387.2,
+      "pumpHours": 8.9,
+      "alerts": 1,
+      "irrigationCycles": 4,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-10-04": {
+      "date": "2025-10-04",
+      "temperature": 24.8,
+      "humidity": 69.7,
+      "soilMoisture": 68.9,
+      "waterConsumption": 365.3,
+      "pumpHours": 8.2,
+      "alerts": 0,
+      "irrigationCycles": 3,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-10-03": {
+      "date": "2025-10-03",
+      "temperature": 27.2,
+      "humidity": 66.1,
+      "soilMoisture": 64.7,
+      "waterConsumption": 398.5,
+      "pumpHours": 9.1,
+      "alerts": 1,
+      "irrigationCycles": 4,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-10-02": {
+      "date": "2025-10-02",
+      "temperature": 29.3,
+      "humidity": 58.4,
+      "soilMoisture": 56.2,
+      "waterConsumption": 445.8,
+      "pumpHours": 10.3,
+      "alerts": 2,
+      "irrigationCycles": 5,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-10-01": {
+      "date": "2025-10-01",
+      "temperature": 28.7,
+      "humidity": 61.2,
+      "soilMoisture": 59.8,
+      "waterConsumption": 412.3,
+      "pumpHours": 9.5,
+      "alerts": 1,
+      "irrigationCycles": 4,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-09-30": {
+      "date": "2025-09-30",
+      "temperature": 26.5,
+      "humidity": 67.8,
+      "soilMoisture": 66.4,
+      "waterConsumption": 356.7,
+      "pumpHours": 8.1,
+      "alerts": 0,
+      "irrigationCycles": 3,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "alert-1": {
+      "date": "2025-10-06T15:30:00Z",
+      "type": "alert",
+      "severity": "warning",
+      "message": "Low soil moisture in Zone 1",
+      "zone": "zone-1",
+      "value": 35.2
+    },
+    "alert-2": {
+      "date": "2025-10-06T14:15:00Z",
+      "type": "alert",
+      "severity": "info",
+      "message": "Irrigation cycle completed in Zone 2",
+      "zone": "zone-2",
+      "waterUsed": 180.2
+    },
+    "alert-3": {
+      "date": "2025-10-05T16:45:00Z",
+      "type": "alert",
+      "severity": "error",
+      "message": "Pump 1 maintenance required",
+      "equipment": "pump-1"
+    },
+    "2025-09-29": {
+      "date": "2025-09-29",
+      "temperature": 25.8,
+      "humidity": 68.7,
+      "soilMoisture": 66.4,
+      "waterConsumption": 332.9,
+      "pumpHours": 7.6,
+      "alerts": 0,
+      "irrigationCycles": 3,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-09-28": {
+      "date": "2025-09-28",
+      "temperature": 30.4,
+      "humidity": 54.2,
+      "soilMoisture": 49.8,
+      "waterConsumption": 469.1,
+      "pumpHours": 11.2,
+      "alerts": 3,
+      "irrigationCycles": 5,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-09-27": {
+      "date": "2025-09-27",
+      "temperature": 28.7,
+      "humidity": 60.1,
+      "soilMoisture": 57.3,
+      "waterConsumption": 378.4,
+      "pumpHours": 8.7,
+      "alerts": 1,
+      "irrigationCycles": 4,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-09-26": {
+      "date": "2025-09-26",
+      "temperature": 26.2,
+      "humidity": 67.5,
+      "soilMoisture": 65.1,
+      "waterConsumption": 356.8,
+      "pumpHours": 8.1,
+      "alerts": 0,
+      "irrigationCycles": 3,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "2025-09-25": {
+      "date": "2025-09-25",
+      "temperature": 31.2,
+      "humidity": 51.8,
+      "soilMoisture": 46.3,
+      "waterConsumption": 467.1,
+      "pumpHours": 10.8,
+      "alerts": 2,
+      "irrigationCycles": 5,
+      "zones": ["zone-1", "zone-2", "zone-3"]
+    },
+    "sensor-reading-1": {
+      "date": "2025-10-06T16:30:00Z",
+      "temperature": 25.3,
+      "humidity": 65.2,
+      "soilMoisture": 68.5,
+      "lightLevel": 850,
+      "ph": 6.8,
+      "ec": 1.2,
+      "zone": "zone-1",
+      "type": "sensor"
+    },
+    "sensor-reading-2": {
+      "date": "2025-10-06T16:25:00Z",
+      "temperature": 24.8,
+      "humidity": 67.1,
+      "soilMoisture": 65.2,
+      "lightLevel": 820,
+      "ph": 7.1,
+      "ec": 1.1,
+      "zone": "zone-2",
+      "type": "sensor"
+    },
+    "sensor-reading-3": {
+      "date": "2025-10-06T16:20:00Z",
+      "temperature": 26.1,
+      "humidity": 63.8,
+      "soilMoisture": 62.3,
+      "lightLevel": 890,
+      "ph": 6.9,
+      "ec": 1.3,
+      "zone": "zone-3",
+      "type": "sensor"
+    },
+    "maintenance-1": {
+      "date": "2025-10-05T09:00:00Z",
+      "type": "maintenance",
+      "equipment": "pump-1",
+      "action": "filter_replacement",
+      "technician": "user-operator",
+      "duration": 45,
+      "notes": "Replaced main filter and checked pressure"
+    },
+    "maintenance-2": {
+      "date": "2025-10-03T14:30:00Z",
+      "type": "maintenance",
+      "equipment": "valve-2",
+      "action": "calibration",
+      "technician": "user-admin",
+      "duration": 30,
+      "notes": "Calibrated valve opening percentage"
+    },
+    "weather-1": {
+      "date": "2025-10-06T16:00:00Z",
+      "type": "weather",
+      "temperature": 28.5,
+      "humidity": 62.0,
+      "windSpeed": 12.3,
+      "windDirection": "NW",
+      "pressure": 1013.2,
+      "rainfall": 0.0,
+      "uvIndex": 6.8,
+      "cloudCover": 25
+    },
+    "weather-2": {
+      "date": "2025-10-06T15:00:00Z",
+      "type": "weather",
+      "temperature": 29.1,
+      "humidity": 58.5,
+      "windSpeed": 15.7,
+      "windDirection": "W",
+      "pressure": 1012.8,
+      "rainfall": 0.0,
+      "uvIndex": 7.2,
+      "cloudCover": 20
+    },
+    "system-event-1": {
+      "date": "2025-10-06T16:15:00Z",
+      "type": "system",
+      "event": "irrigation_cycle_start",
+      "zone": "zone-1",
+      "duration": 1800,
+      "waterTarget": 150.0,
+      "user": "system"
+    },
+    "system-event-2": {
+      "date": "2025-10-06T15:45:00Z",
+      "type": "system",
+      "event": "irrigation_cycle_complete",
+      "zone": "zone-2",
+      "duration": 1680,
+      "waterUsed": 120.5,
+      "user": "system"
+    },
+    "energy-1": {
+      "date": "2025-10-06T16:00:00Z",
+      "type": "energy",
+      "totalConsumption": 12.5,
+      "pumpConsumption": 8.3,
+      "controllerConsumption": 2.1,
+      "sensorConsumption": 1.8,
+      "otherConsumption": 0.3,
+      "cost": 2.45,
+      "currency": "EUR"
+    },
+    "water-quality-1": {
+      "date": "2025-10-06T16:00:00Z",
+      "type": "water_quality",
+      "ph": 7.2,
+      "ec": 1.15,
+      "tds": 580,
+      "temperature": 22.8,
+      "turbidity": 0.8,
+      "chlorine": 0.2,
+      "source": "main_supply"
+    }
+  }
+}
