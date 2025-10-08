@@ -7,7 +7,6 @@ import {
   Calendar,
   Activity,
   Wrench,
-  Menu,
   X,
   LogOut,
   Bell,
@@ -63,13 +62,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
 
   return (
     <>
-      {/* Mobile menu button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-emerald-600 text-white rounded-md shadow-lg"
-      >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
 
       {/* Overlay for mobile */}
       {isOpen && (
@@ -81,26 +73,38 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
 
       {/* Sidebar */}
       <div className={`
-        fixed lg:static inset-y-0 left-0 z-40 w-64 bg-emerald-800 text-white transform transition-transform duration-300 ease-in-out flex flex-col
+        fixed inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-emerald-800 to-emerald-900 text-white flex flex-col shadow-xl
+        lg:sticky lg:top-0 lg:h-screen lg:transform-none lg:translate-x-0 
+        transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Logo */}
-        <div className="flex items-center justify-center h-16 bg-emerald-900 border-b border-emerald-700">
-          <div className="flex items-center space-x-2">
-            <img 
-              src="/logo.jpg" 
-              alt="AgroBotics Logo" 
-              className="w-10 h-10 object-contain"
-            />
-            <span className="text-xl font-bold">AgroBotics</span>
+        <div className="flex items-center justify-between h-16 bg-emerald-900/50 border-b border-emerald-700/50 backdrop-blur-sm px-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+              <img 
+                src="/logo.jpg" 
+                alt="AgroBotics Logo" 
+                className="w-8 h-8 object-contain rounded"
+              />
+            </div>
+            <span className="text-xl font-bold text-white">AgroBotics</span>
           </div>
+          
+          {/* Close button for mobile */}
+          <button
+            onClick={() => setIsOpen(false)}
+            className="lg:hidden p-2 text-emerald-200 hover:text-white hover:bg-emerald-800 rounded-lg transition-all duration-200"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* User Info */}
         {user && (
-          <div className="p-4 border-b border-emerald-700">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center">
+          <div className="p-4 border-b border-emerald-700/50">
+            <div className="flex items-center space-x-3 bg-emerald-800/30 rounded-lg p-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center ring-2 ring-emerald-400/20">
                 {user.avatar ? (
                   <img 
                     src={user.avatar} 
@@ -108,8 +112,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
-                  <span className="text-white font-medium">
-                    {user.fullName.charAt(0)}
+                  <span className="text-white font-semibold text-sm">
+                    {user.fullName.charAt(0).toUpperCase()}
                   </span>
                 )}
               </div>
@@ -117,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
                 <p className="text-white font-medium text-sm truncate">
                   {user.fullName}
                 </p>
-                <p className="text-emerald-200 text-xs">
+                <p className="text-emerald-200 text-xs capitalize">
                   {t(user.role)}
                 </p>
               </div>
@@ -126,10 +130,11 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
         )}
 
         {/* Navigation */}
-        <nav className="flex-1 py-4">
-          <ul className="space-y-2 px-4">
+        <nav className="flex-1 py-4 overflow-y-auto">
+          <ul className="space-y-1 px-3">
             {filteredMenuItems.map((item) => {
               const Icon = item.icon;
+              const isActive = currentView === item.id;
               return (
                 <li key={item.id}>
                   <button
@@ -138,15 +143,20 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
                       setIsOpen(false);
                     }}
                     className={`
-                      w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200
-                      ${currentView === item.id
-                        ? 'bg-emerald-600 text-white shadow-lg transform scale-105'
-                        : 'text-emerald-200 hover:bg-emerald-700 hover:text-white'
+                      w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group touch-target
+                      ${isActive
+                        ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-lg ring-2 ring-emerald-400/20'
+                        : 'text-emerald-100 hover:bg-emerald-700/50 hover:text-white'
                       }
                     `}
                   >
-                    <Icon className="w-5 h-5" />
-                    <span className="font-medium">{item.label}</span>
+                    <Icon className={`w-5 h-5 transition-transform duration-200 ${
+                      isActive ? 'scale-110' : 'group-hover:scale-105'
+                    }`} />
+                    <span className="font-medium text-sm">{item.label}</span>
+                    {isActive && (
+                      <div className="ml-auto w-2 h-2 bg-white rounded-full animate-pulse" />
+                    )}
                   </button>
                 </li>
               );
@@ -155,22 +165,21 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView, isOpen, 
         </nav>
 
         {/* Logout Button */}
-        <div className="p-4 border-t border-emerald-700">
+        <div className="p-3 border-t border-emerald-700/50">
           <button
             onClick={logout}
-            className="w-full flex items-center space-x-3 px-4 py-3 text-emerald-200 hover:bg-emerald-700 hover:text-white rounded-lg transition-all duration-200"
+            className="w-full flex items-center space-x-3 px-4 py-3 text-emerald-200 hover:bg-red-600/20 hover:text-red-200 rounded-xl transition-all duration-200 group touch-target"
           >
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium">{t('logout')}</span>
+            <LogOut className="w-5 h-5 group-hover:scale-105 transition-transform duration-200" />
+            <span className="font-medium text-sm">{t('logout')}</span>
           </button>
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-emerald-700">
-          <div className="text-xs text-emerald-300 text-center">
-            AgroBotics v2.0
-            <br />
-            © 2025 AgroBotics
+        <div className="p-3 border-t border-emerald-700/50 bg-emerald-900/30">
+          <div className="text-xs text-emerald-300/80 text-center space-y-1">
+            <div className="font-medium">AgroBotics v2.0</div>
+            <div className="text-emerald-400/60">© 2025 AgroBotics</div>
           </div>
         </div>
       </div>

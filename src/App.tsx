@@ -9,6 +9,7 @@ import Programming from './components/Programming';
 import Equipment from './components/Equipment/Equipment';
 import UserManagement from './components/Users/UserManagement';
 import History from './components/History';
+import Reports from './components/Reports';
 import Notifications from './components/Notifications';
 import Settings from './components/Settings';
 import Chatbot from './components/Chatbot/Chatbot';
@@ -49,7 +50,7 @@ import {
 } from './services/realtimeDatabaseService';
 
 function AppContent() {
-  const { isAuthenticated, isLoading, useFirebase } = useAuth();
+  const { isAuthenticated, isLoading, useFirebase, user } = useAuth();
   const [currentView, setCurrentView] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [systemStatus, setSystemStatus] = useState<SystemStatus>(mockSystemStatus);
@@ -132,13 +133,28 @@ function AppContent() {
     return <Login />;
   }
 
-  // Removed unused handleToggleMode function
-
-  const handleTogglePump = () => {
+  const handleToggleMode = () => {
     setSystemStatus(prev => ({
       ...prev,
-      pumpStatus: prev.pumpStatus === 'on' ? 'off' : 'on'
+      mode: prev.mode === 'automatic' ? 'manual' : 'automatic'
     }));
+  };
+
+  const handleOpenSettings = () => {
+    // Check if user has admin access
+    if (user && (user.role === 'admin' || user.permissions.includes('manage_settings') || user.permissions.includes('all'))) {
+      setCurrentView('settings');
+      setSidebarOpen(false); // Close sidebar on mobile after navigation
+    } else {
+      // Show access denied message or redirect to dashboard
+      console.warn('Access denied: Settings page requires admin privileges');
+      setCurrentView('dashboard');
+    }
+  };
+
+  const handleOpenNotifications = () => {
+    setCurrentView('notifications');
+    setSidebarOpen(false); // Close sidebar on mobile after navigation
   };
 
   const handleToggleZone = async (zoneId: string) => {
@@ -445,14 +461,33 @@ function AppContent() {
         );
       case 'history':
         return (
-          <History />
+          <Reports />
         );
       case 'notifications':
         return (
           <Notifications />
         );
       case 'settings':
-        return <Settings />;
+        // Check if user has admin access to settings
+        if (user && (user.role === 'admin' || user.permissions.includes('manage_settings') || user.permissions.includes('all'))) {
+          return <Settings />;
+        } else {
+          // Redirect to dashboard if no access
+          setCurrentView('dashboard');
+          return (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Accès refusé</h2>
+                <p className="text-gray-600">Vous n'avez pas les permissions nécessaires pour accéder aux paramètres.</p>
+                <p className="text-sm text-gray-500 mt-2">Seuls les administrateurs peuvent accéder à cette page.</p>
+              </div>
+            </div>
+          );
+        }
+      case 'chatbot':
+        return (
+          <Chatbot />
+        );
       default:
         return (
           <Dashboard
@@ -477,23 +512,46 @@ function AppContent() {
         setIsOpen={setSidebarOpen}
       />
       
-      <div className="flex-1 flex flex-col lg:ml-0">
+      <div className="flex-1 flex flex-col lg:ml-0 min-w-0">
         <Header
           systemStatus={systemStatus}
           alerts={alerts}
-          onTogglePump={handleTogglePump}
+          onToggleMode={handleToggleMode}
+          onOpenSettings={handleOpenSettings}
+          onOpenNotifications={handleOpenNotifications}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
         />
         
-        <main className="flex-1 p-4 lg:p-6 overflow-x-hidden">
-          {renderContent()}
+        <main className="flex-1 p-3 sm:p-4 lg:p-6 overflow-x-hidden">
+          <div className="max-w-full">
+            {renderContent()}
+          </div>
         </main>
         
-        {/* Chatbot */}
-        <Chatbot 
-          sensors={mockSensorData}
-          zones={zones}
-          alerts={alerts}
-        />
+        {/* Chatbot - Hidden on small screens, positioned better on larger screens */}
+        <div className="hidden sm:block">
+          <Chatbot 
+            sensors={mockSensorData}
+            zones={zones}
+            alerts={alerts}
+          />
+        </div>
+        
+        {/* Mobile Chatbot Button */}
+        <div className="sm:hidden fixed bottom-4 right-4 z-50">
+          <button 
+            className="bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105"
+            onClick={() => {
+              // This would open a mobile chatbot modal
+              console.log('Open mobile chatbot');
+            }}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
